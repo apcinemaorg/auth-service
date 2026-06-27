@@ -1,7 +1,7 @@
 import { RedisService } from '@/infrastructure/redis/redis.service';
 import { SendOtpRequest, VerifyOtpRequest } from '@apcinema/contracts/gen/auth';
+import { AuthGrpcErrors } from '@/shared/grpc/auth-grpc.errors';
 import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 import { createHash } from 'crypto';
 
 @Injectable()
@@ -24,11 +24,11 @@ export class OtpService {
         const { identifier, type, code } = data;
         const storedHash = await this.redisService.get(`otp:${type}:${identifier}`);
         const newHash = createHash('sha256').update(code.toString()).digest('hex');
-        if(!storedHash){
-            throw new RpcException('Invalid OTP');
+        if (!storedHash) {
+            throw AuthGrpcErrors.otpExpired();
         }
-        if(storedHash !== newHash){
-            throw new RpcException('Invalid OTP');
+        if (storedHash !== newHash) {
+            throw AuthGrpcErrors.otpInvalid();
         }
         await this.redisService.del(`otp:${type}:${identifier}`);
         return true;

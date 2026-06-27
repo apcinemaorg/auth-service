@@ -1,9 +1,9 @@
 import type { SendOtpRequest, VerifyOtpRequest, VerifyOtpResponse } from '@apcinema/contracts/gen/auth';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { AuthGrpcErrors } from '@/shared/grpc/auth-grpc.errors';
+import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { Account } from '@prisma/generated/client';
 import { OtpService } from '../otp/otp.service';
-import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
             account = await this.authRepository.findAccountByEmail(identifier)
         }
         if (!account) {
-            throw new RpcException('Account not found');
+            throw AuthGrpcErrors.accountNotFound();
         }
         if (type === 'phone' && !account.isPhoneVerified) {
             await this.authRepository.updateAccount(account.id, { isPhoneVerified: true });

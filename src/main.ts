@@ -18,8 +18,9 @@ async function bootstrap() {
 
     const swaggerConfig = new DocumentBuilder()
         .setTitle('Auth Service')
-        .setDescription('Authentication API: OTP, registration and login')
+        .setDescription('Authentication API: OTP, registration, login and session management')
         .setVersion('1.0')
+        .addBearerAuth()
         .addTag('Auth')
         .build();
 

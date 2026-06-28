@@ -1,7 +1,7 @@
 import { RpcStatus, serializeRpcErrorPayload } from '@apcinema/shared';
 import { RpcException } from '@nestjs/microservices';
 
-type AuthErrorCode = 'OTP_EXPIRED' | 'OTP_INVALID' | 'ACCOUNT_NOT_FOUND';
+type AuthErrorCode = 'OTP_EXPIRED' | 'OTP_INVALID' | 'ACCOUNT_NOT_FOUND' | 'INVALID_TOKEN';
 
 function authRpcException(
     grpcCode: number,
@@ -32,5 +32,11 @@ export const AuthGrpcErrors = {
             RpcStatus.NOT_FOUND,
             'ACCOUNT_NOT_FOUND',
             'Account not found for the provided identifier.',
+        ),
+    invalidToken: () =>
+        authRpcException(
+            RpcStatus.UNAUTHENTICATED,
+            'INVALID_TOKEN',
+            'Invalid or expired token.',
         ),
 };

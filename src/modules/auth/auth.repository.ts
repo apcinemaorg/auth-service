@@ -23,6 +23,14 @@ export class AuthRepository {
         })
     }
 
+    public async findAccountById(id: string): Promise<Account | null> {
+        return await this.prismaService.account.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
+
     public async createAccount(data: AccountCreateInput): Promise<Account>{
         return await this.prismaService.account.create({
             data: data

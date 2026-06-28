@@ -7,14 +7,14 @@ import { OtpModule } from './modules/otp/otp.module';
 
 @Module({
 	imports: [
-		PrismaModule,
-		RedisModule,
-		AuthModule,
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: '.env',
 		}),
+		PrismaModule,
+		RedisModule,
 		OtpModule,
+		AuthModule,
 	],
 	controllers: [],
 	providers: []

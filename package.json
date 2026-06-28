@@ -22,6 +22,7 @@
   "dependencies": {
     "@apcinema/contracts": "^1.0.3",
     "@apcinema/core": "^1.0.4",
+    "@apcinema/shared": "file:../common",
     "@grpc/grpc-js": "^1.14.4",
     "@grpc/proto-loader": "^0.8.1",
     "@nestjs/common": "^11.0.1",

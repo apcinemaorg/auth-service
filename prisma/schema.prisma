@@ -15,6 +15,11 @@ model Account {
   phone String? @unique
   email String? @unique
 
+  passwordHash String? @map("password_hash")
+  username     String? @unique
+  firstName    String? @map("first_name")
+  lastName     String? @map("last_name")
+
   isPhoneVerified Boolean @default(false) @map("is_phone_verified")
   isEmailVerified Boolean @default(false) @map("is_email_verified")
 

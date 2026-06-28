@@ -1,7 +1,8 @@
-import type { SendOtpRequest, VerifyOtpRequest, VerifyOtpResponse } from '@apcinema/contracts/gen/auth';
+import type { SendOtpRequest, VerifyOtpRequest, VerifyOtpResponse, RegisterRequest, RegisterResponse, LoginRequest, LoginResponse } from '@apcinema/contracts/gen/auth';
 import { AuthGrpcErrors } from '@/shared/grpc/auth-grpc.errors';
 import { Injectable } from '@nestjs/common';
 import { Account } from '@prisma/generated/client';
+import * as bcrypt from 'bcrypt';
 
 import { OtpService } from '../otp/otp.service';
 import { AuthRepository } from './auth.repository';
@@ -15,15 +16,6 @@ export class AuthService {
 
     public async sendOtp(data: SendOtpRequest) {
         const { identifier, type } = data;
-        let account = await this.resolveAccount(identifier, type);
-
-        if (!account) {
-            account = await this.authRepository.createAccount({
-                phone: type === 'phone' ? identifier : undefined,
-                email: type === 'email' ? identifier : undefined,
-            });
-        }
-
         await this.otpService.sendOtp({ identifier, type });
         return { ok: true };
     }
@@ -66,5 +58,44 @@ export class AuthService {
         }
 
         return null;
+    }
+
+    public async registerAccount(data: RegisterRequest): Promise<RegisterResponse> {
+        const { identifier, type, password, username, firstName, lastName } = data;
+        const account = await this.resolveAccount(identifier, type);
+
+        if (account) {
+            return { ok: false, accessToken: '', refreshToken: '', errorMessage: 'Account already exists' };
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        await this.authRepository.createAccount({
+            phone: type === 'phone' ? identifier : undefined,
+            email: type === 'email' ? identifier : undefined,
+            passwordHash,
+            username,
+            firstName,
+            lastName,
+        });
+
+        return { ok: true, accessToken: '', refreshToken: '', errorMessage: '' };
+    }
+
+    public async login(data: LoginRequest): Promise<LoginResponse> {
+        const { identifier, type, password } = data;
+        const account = await this.resolveAccount(identifier, type);
+
+        if (!account?.passwordHash) {
+            return { ok: false, accessToken: '', refreshToken: '', errorMessage: 'Invalid credentials' };
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, account.passwordHash);
+
+        if (!isPasswordValid) {
+            return { ok: false, accessToken: '', refreshToken: '', errorMessage: 'Invalid credentials' };
+        }
+
+        return { ok: true, accessToken: '', refreshToken: '', errorMessage: '' };
     }
 }

@@ -6,10 +6,16 @@ import { RedisModule } from './infrastructure/redis/redis.module';
 import { OtpModule } from './modules/otp/otp.module';
 
 @Module({
-	imports: [PrismaModule, RedisModule, AuthModule, ConfigModule.forRoot({
-		isGlobal: true,
-		envFilePath: '.env'
-	}), RedisModule, OtpModule],
+	imports: [
+		PrismaModule,
+		RedisModule,
+		AuthModule,
+		ConfigModule.forRoot({
+			isGlobal: true,
+			envFilePath: '.env',
+		}),
+		OtpModule,
+	],
 	controllers: [],
 	providers: []
 })

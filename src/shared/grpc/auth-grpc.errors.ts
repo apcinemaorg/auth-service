@@ -1,4 +1,4 @@
-import { RpcStatus } from '@apcinema/shared';
+import { RpcStatus, serializeRpcErrorPayload } from '@apcinema/shared';
 import { RpcException } from '@nestjs/microservices';
 
 type AuthErrorCode = 'OTP_EXPIRED' | 'OTP_INVALID' | 'ACCOUNT_NOT_FOUND';
@@ -10,7 +10,7 @@ function authRpcException(
 ): RpcException {
     return new RpcException({
         code: grpcCode,
-        message: JSON.stringify({ code: errorCode, message }),
+        message: serializeRpcErrorPayload(errorCode, message),
     });
 }
 

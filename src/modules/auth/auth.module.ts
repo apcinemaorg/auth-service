@@ -5,8 +5,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { OtpService } from '../otp/otp.service';
 import { AuthController } from './auth.controller';
 import { AuthHttpController } from './auth-http.controller';
-import { ACCESS_TOKEN_EXPIRES_IN } from './constants/auth.constants';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import {
+    ACCESS_TOKEN_EXPIRES_IN,
+    AuthenticatedRequest,
+    JwtAuthGuard,
+} from '@apcinema/shared';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 

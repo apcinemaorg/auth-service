@@ -15,14 +15,15 @@ import { Account } from '@prisma/generated/client';
 import * as bcrypt from 'bcrypt';
 
 import { OtpService } from '../otp/otp.service';
+import { AuthRepository } from './auth.repository';
 import {
     ACCESS_TOKEN_EXPIRES_IN,
+    AuthTokenPayload,
     getRefreshTokenRedisKey,
+    isAuthTokenPayload,
     REFRESH_TOKEN_EXPIRES_IN,
     REFRESH_TOKEN_TTL_SECONDS,
-} from './constants/auth.constants';
-import { AuthRepository } from './auth.repository';
-import { AuthTokenPayload, isAuthTokenPayload } from './types/auth-token.payload';
+} from '@apcinema/shared';
 
 export interface AuthTokens {
     accessToken: string;

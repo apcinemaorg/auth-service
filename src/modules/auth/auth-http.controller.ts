@@ -31,7 +31,8 @@ import {
     VerifyOtpDto,
     VerifyOtpResponseDto,
 } from './dto/auth.dto';
-import { JwtAuthGuard, type AuthenticatedRequest } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@apcinema/shared';
+import type { AuthenticatedRequest } from '@apcinema/shared';
 
 @ApiTags('Auth')
 @Controller('auth')
